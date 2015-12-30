@@ -29,8 +29,8 @@ public class DynamicArray<E> implements Collection<E> {
     }
     
     public DynamicArray(E ... array) {
-        for (capacity = DEFAULT_CAPACITY; capacity < array.length; ) {
-            capacity <<= 1;
+        for (capacity = DEFAULT_CAPACITY; capacity < array.length; 
+                capacity <<= 1) {
         }
         this.values = copyValues(array, capacity);
         this.indexOfNextElem = array.length;
