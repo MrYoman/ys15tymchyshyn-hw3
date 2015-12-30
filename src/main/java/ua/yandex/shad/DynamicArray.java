@@ -10,7 +10,7 @@ import java.util.NoSuchElementException;
 
 public class DynamicArray<E> implements Collection<E> {
 
-    private final static int DEFAULT_CAPACITY = 2;
+    private static final int DEFAULT_CAPACITY = 2;
     
     private E[] values;
     private int capacity;
@@ -19,19 +19,20 @@ public class DynamicArray<E> implements Collection<E> {
     public DynamicArray() {
         this.capacity = DEFAULT_CAPACITY;
         this.indexOfNextElem = 0;
-        this.values = (E[])(new Object[DEFAULT_CAPACITY]);
+        this.values = (E[]) (new Object[DEFAULT_CAPACITY]);
     }
     
     public DynamicArray(DynamicArray<E> array) {
-        this.values = copyValues(array.values,0);
+        this.values = copyValues(array.values, 0);
         this.capacity = this.values.length;
         this.indexOfNextElem = array.indexOfNextElem;
     }
     
     public DynamicArray(E ... array) {
-        for (capacity = DEFAULT_CAPACITY; capacity < array.length; 
-                capacity <<= 1);
-        this.values = copyValues(array,capacity);
+        for (capacity = DEFAULT_CAPACITY; capacity < array.length; ) {
+            capacity <<= 1;
+        }
+        this.values = copyValues(array, capacity);
         this.indexOfNextElem = array.length;
     }
     
@@ -41,7 +42,7 @@ public class DynamicArray<E> implements Collection<E> {
         if (valNumber < minCapacity) {
             valNumber = minCapacity;
         }
-        E[] valuesCopy = (E[])(new Object[valNumber]);
+        E[] valuesCopy = (E[]) (new Object[valNumber]);
         
         System.arraycopy(array, 0, valuesCopy, 0, size);
         
@@ -88,7 +89,7 @@ public class DynamicArray<E> implements Collection<E> {
     }
     
     public E[] getArray() {
-        E[] array = (E[])(new Object[indexOfNextElem]);
+        E[] array = (E[]) (new Object[indexOfNextElem]);
         System.arraycopy(values, 0, array, 0, indexOfNextElem);
         return array;
     }
@@ -113,8 +114,9 @@ public class DynamicArray<E> implements Collection<E> {
         }
         if (capacity >= DEFAULT_CAPACITY 
                 && indexOfNextElem - 1 <= (capacity >> 2)) {
-            E[] array = (E[])(new Object[indexOfNextElem >> 1]);
-            for (int i = 0, j = 0; i < indexOfNextElem; i++) {
+            E[] array = (E[]) (new Object[indexOfNextElem >> 1]);
+            int j = 0;
+            for (int i = 0; i < indexOfNextElem; i++) {
                 if (i == index) {
                     continue;
                 }
@@ -135,7 +137,7 @@ public class DynamicArray<E> implements Collection<E> {
     
     @Override
     public void clear() {
-        values = (E[])(new Object[DEFAULT_CAPACITY]);
+        values = (E[]) (new Object[DEFAULT_CAPACITY]);
         capacity = DEFAULT_CAPACITY;
         indexOfNextElem = DEFAULT_CAPACITY;
     }
@@ -152,7 +154,7 @@ public class DynamicArray<E> implements Collection<E> {
 
     @Override
     public boolean contains(Object o) {
-        E val = (E)o;
+        E val = (E) o;
         for (int i = 0; i < indexOfNextElem; i++) {
             if (val.equals(values[i])) {
                 return true;
@@ -168,9 +170,9 @@ public class DynamicArray<E> implements Collection<E> {
 
     @Override
     public <T> T[] toArray(T[] a) {
-        T[] val = (T[])(new Object[indexOfNextElem]);
+        T[] val = (T[]) (new Object[indexOfNextElem]);
         for (int i = 0; i < indexOfNextElem; i++) {
-            val[i] = (T)values[i];
+            val[i] = (T) values[i];
         }
         return val;
     }
@@ -178,7 +180,7 @@ public class DynamicArray<E> implements Collection<E> {
     @Override
     public boolean remove(Object o) {
         for (int i = 0; i < indexOfNextElem; i++) {
-            if (values[i].equals((E)o)) {
+            if (values[i].equals((E) o)) {
                 removeAt(i);
                 return true;
             }
@@ -193,7 +195,7 @@ public class DynamicArray<E> implements Collection<E> {
 
     @Override
     public boolean addAll(Collection<? extends E> c) {
-        E[] val = (E[])(new Object[c.size()]);
+        E[] val = (E[]) (new Object[c.size()]);
         int i = 0;
         for (E e: c) {
             val[i++] = e;
@@ -213,10 +215,11 @@ public class DynamicArray<E> implements Collection<E> {
     @Override
     public boolean retainAll(Collection<?> c) {
         boolean flag = true;
+        int j = 0;
         for (int i = 0; i < indexOfNextElem; i++) {
-            if (!c.contains(values[i])) {
-                removeAt(i);
-                i--;
+            if (!c.contains(values[i + j])) {
+                removeAt(i + j);
+                j--;
                 flag = false;
             }
         }
@@ -229,7 +232,7 @@ public class DynamicArray<E> implements Collection<E> {
     }
     
     private class ArrayIterator implements Iterator<E> {
-        int currentPos = 0;
+        private int currentPos = 0;
         
         @Override
         public boolean hasNext() {

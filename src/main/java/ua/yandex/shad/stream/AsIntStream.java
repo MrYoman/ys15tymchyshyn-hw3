@@ -32,7 +32,10 @@ public class AsIntStream implements IntStream {
     public static IntStream of(int... values) {
         AsIntStream stream = new AsIntStream();
         
-        Integer[] val = Arrays.stream(values).boxed().toArray(Integer[]::new);
+        Integer[] val = new Integer[values.length];
+        for (int i = 0; i < values.length; i++) {
+            val[i] = values[i];
+        }
         stream.valuesArray.add(val);
         
         return stream;
