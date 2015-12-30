@@ -7,7 +7,6 @@ import ua.yandex.shad.function.IntConsumer;
 import ua.yandex.shad.function.IntBinaryOperator;
 
 import ua.yandex.shad.DynamicArray;
-import java.util.Arrays;
 import ua.yandex.shad.function.IntStreamOperation;
 
 public class AsIntStream implements IntStream {
