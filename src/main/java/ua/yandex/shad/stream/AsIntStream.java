@@ -204,13 +204,14 @@ public class AsIntStream implements IntStream {
                                         throws IllegalArgumentException {
         OperationName oper = OperationName.valueOf(name);
         int number = 0;
+        int resultNumber = 0;
         for (OperationName op: OperationName.values()) {
             if (op.equals(oper)) {
-                break;
+                resultNumber = number;
             }
             number++;
         }
-        return number;
+        return resultNumber;
     }
     
     public String[] getOperationNames() {

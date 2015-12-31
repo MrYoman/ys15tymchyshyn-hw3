@@ -11,6 +11,7 @@ public class StreamAppTest {
     
     private IntStream intStream;
     private IntStream intStreamEmpty;
+    private IntStream intStreamNotMonotone;
     
     @Before
     public void init() {
@@ -18,6 +19,8 @@ public class StreamAppTest {
         intStream = AsIntStream.of(intArr);
         int[] intArrEmpty = {};
         intStreamEmpty = AsIntStream.of(intArrEmpty);
+        int[] intArrNotMonotone = {0, -1, 1, 2, 3};
+        intStreamNotMonotone = AsIntStream.of(intArrNotMonotone);
     }
     
     @Test
@@ -62,7 +65,7 @@ public class StreamAppTest {
     public void testStreamMax() {
         System.out.println("streamMax");
         Integer expResult = 3;
-        Integer result = intStream.max();
+        Integer result = intStreamNotMonotone.max();
         assertEquals(expResult, result);
     }
     
@@ -76,7 +79,7 @@ public class StreamAppTest {
     public void testStreamMin() {
         System.out.println("streamMin");
         Integer expResult = -1;
-        Integer result = intStream.min();
+        Integer result = intStreamNotMonotone.min();
         assertEquals(expResult, result);
     }
     
