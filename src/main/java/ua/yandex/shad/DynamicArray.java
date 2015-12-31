@@ -1,5 +1,5 @@
 /*
- *@author Igor Tymchyshyn
+ * @author Igor Tymchyshyn
 */
 
 package ua.yandex.shad;
@@ -140,7 +140,7 @@ public class DynamicArray<E> implements Collection<E> {
     public void clear() {
         values = (E[]) (new Object[DEFAULT_CAPACITY]);
         capacity = DEFAULT_CAPACITY;
-        indexOfNextElem = DEFAULT_CAPACITY;
+        indexOfNextElem = 0;
     }
     
     @Override

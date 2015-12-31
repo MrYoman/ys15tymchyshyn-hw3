@@ -75,7 +75,7 @@ public class AsIntStream implements IntStream {
         
         Integer minValue = Integer.MAX_VALUE;
         for (Integer val: valuesArray) {
-            if (val > minValue) {
+            if (val < minValue) {
                 minValue = val;
             }
         }
@@ -192,12 +192,35 @@ public class AsIntStream implements IntStream {
                 doMap((IntUnaryOperator) operations.getAt(i));
                 continue;
             }
-            if (operName == OperationName.FLATMAP) {
-                doFlatMap((IntToIntStreamFunction) operations.getAt(i));
-            }
+            //if (operName == OperationName.FLATMAP) {
+            doFlatMap((IntToIntStreamFunction) operations.getAt(i));
+            //}
         }
         operations.clear();
         operationNames.clear();
     }
 
+    public int getOperationNumberByName(String name) 
+                                        throws IllegalArgumentException {
+        OperationName oper = OperationName.valueOf(name);
+        int number = 0;
+        for (OperationName op: OperationName.values()) {
+            if (op.equals(oper)) {
+                break;
+            }
+            number++;
+        }
+        return number;
+    }
+    
+    public String[] getOperationNames() {
+        OperationName[] operValues = OperationName.values();
+        int valNumber = operValues.length;
+        String[] names = new String[valNumber];
+        for (int i = 0; i < valNumber; i++) {
+            names[i] = operValues[i].toString();
+        }
+        return names;
+    }
+    
 }
