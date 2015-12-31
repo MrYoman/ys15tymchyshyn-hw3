@@ -24,6 +24,12 @@ public class StreamAppTest {
     }
     
     @Test
+    public void testStreamConstructor() {
+        System.out.println("streamConstructor");
+        StreamApp streamApp = new StreamApp();      
+    }
+    
+    @Test
     public void testStreamOperations() {
         System.out.println("streamOperations");
         int expResult = 42;
