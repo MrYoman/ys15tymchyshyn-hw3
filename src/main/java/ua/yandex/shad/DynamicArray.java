@@ -1,9 +1,13 @@
 /*
  * @author Igor Tymchyshyn
+ *
+ * This class was written not only for concrete project,
+ * it was written for possible using in future;
 */
 
 package ua.yandex.shad;
 
+import java.lang.reflect.Array;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
@@ -23,7 +27,7 @@ public class DynamicArray<E> implements Collection<E> {
     }
     
     public DynamicArray(DynamicArray<E> array) {
-        this.values = copyValues(array.values, 0);
+        this.values = copyValues(array.values, DEFAULT_CAPACITY);
         this.capacity = this.values.length;
         this.indexOfNextElem = array.indexOfNextElem;
     }
@@ -85,16 +89,18 @@ public class DynamicArray<E> implements Collection<E> {
         if (array == null) {
             return false;
         }
-        E[] arrVal = array.getArray();
+        E[] arrVal = (E[]) array.toArray();
         return add(arrVal);
     }
     
+    
+    /*
     public E[] getArray() {
-        E[] array = (E[]) (new Object[indexOfNextElem]);
+        E[] array = (E[]) new Object[indexOfNextElem];
         System.arraycopy(values, 0, array, 0, indexOfNextElem);
         return array;
     }
-    
+    */
     public E getAt(int index) throws NoSuchElementException {
         if (index >= indexOfNextElem) {
             throw new NoSuchElementException();
@@ -109,12 +115,11 @@ public class DynamicArray<E> implements Collection<E> {
         values[index] = val;
     }
     
-    public int removeAt(int index) {
+    public int removeAt(int index) throws NoSuchElementException {
         if (index >= indexOfNextElem) {
-            return indexOfNextElem;
+            throw new NoSuchElementException();
         }
-        if (capacity >= DEFAULT_CAPACITY 
-                && indexOfNextElem - 1 <= (capacity >> 2)) {
+        if (indexOfNextElem - 1 <= (capacity >> 2)) {
             E[] array = (E[]) (new Object[indexOfNextElem >> 1]);
             int j = 0;
             for (int i = 0; i < indexOfNextElem; i++) {
@@ -166,12 +171,15 @@ public class DynamicArray<E> implements Collection<E> {
 
     @Override
     public Object[] toArray() {
-        return getArray();
+        Object[] array = new Object[indexOfNextElem];
+        System.arraycopy(values, 0, array, 0, indexOfNextElem);
+        return array;
     }
 
     @Override
     public <T> T[] toArray(T[] a) {
-        T[] val = (T[]) (new Object[indexOfNextElem]);
+        T[] val = (T[]) Array.newInstance(a.getClass().getComponentType(), 
+                                                indexOfNextElem);
         for (int i = 0; i < indexOfNextElem; i++) {
             val[i] = (T) values[i];
         }

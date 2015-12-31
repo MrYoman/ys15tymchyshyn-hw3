@@ -1,6 +1,8 @@
 
 package ua.yandex.shad;
 
+import java.util.Iterator;
+import java.util.NoSuchElementException;
 import org.junit.Assert;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -12,6 +14,7 @@ public class StreamAppTest {
     private IntStream intStream;
     private IntStream intStreamEmpty;
     private IntStream intStreamNotMonotone;
+    private DynamicArray<Integer> dynamicArr;
     
     @Before
     public void init() {
@@ -21,6 +24,7 @@ public class StreamAppTest {
         intStreamEmpty = AsIntStream.of(intArrEmpty);
         int[] intArrNotMonotone = {0, -1, 1, 2, 3};
         intStreamNotMonotone = AsIntStream.of(intArrNotMonotone);
+        dynamicArr = new DynamicArray<>(1, 2, 3);
     }
     
     @Test
@@ -130,6 +134,170 @@ public class StreamAppTest {
         String[] expResult = {"FILTER", "MAP", "FLATMAP"};
         String[] result = ((AsIntStream) intStreamEmpty).getOperationNames();
         Assert.assertArrayEquals(expResult, result);
+    }
+    
+    @Test (expected = NoSuchElementException.class)
+    public void testDynamicArrayIteratorNextWhenNotHasNext() {
+        Iterator<Integer> iter = dynamicArr.iterator();
+        iter.next();
+        iter.next();
+        iter.next();
+        iter.next();
+    }
+    
+    @Test
+    public void testDynamicArrayConstructorOfCopy() {
+        DynamicArray<Integer> dynamicArrDiff = new DynamicArray<>(dynamicArr);
+        Integer[] valDiff = dynamicArrDiff.toArray(new Integer[1]);
+        Integer[] val = dynamicArr.toArray(new Integer[1]);
+        assertArrayEquals(val, valDiff);
+    }
+    
+    @Test
+    public void testDynamicArrayAddOtherDynArrayWhenNullInput() {
+        DynamicArray<Integer> dynArr = null;
+        boolean expResult = false;
+        boolean result = dynamicArr.add(dynArr);
+        assertEquals(expResult, result);
+    }
+    
+    @Test
+    public void testDynamicArrayAddOneElementWhenNullInput() {
+        Integer elem = null;
+        boolean expResult = false;
+        boolean result = dynamicArr.add(elem);
+        assertEquals(expResult, result);
+    }
+    
+    @Test
+    public void testDynamicArrayAddElemArrayWhenNullInput() {
+        Integer[] arr = null;
+        boolean expResult = false;
+        boolean result = dynamicArr.add(arr);
+        assertEquals(expResult, result);
+    }
+    
+    class A {
+        int val;
+        
+        A(int i) {
+            val = i;
+        }
+        
+        public int getVal() {
+            return val;
+        }
+    }
+    
+    class B extends A {
+
+        public B(int i) {
+            super(i);
+        }
+        
+    }
+    
+    @Test
+    public void testDynamicArrayAddAll() {
+        DynamicArray<A> dynArray = new DynamicArray<>();
+        B[] val = new B[2];
+        val[0] = new B(1);
+        val[1] = new B(5);
+        DynamicArray<B> yo = new DynamicArray<>(val);
+        dynArray.addAll(yo);
+        
+        int expResultOne = 1;
+        int expResultTwo = 5;
+        
+        int resultOne = dynArray.getAt(0).getVal();
+        int resultTwo = dynArray.getAt(1).getVal();
+        
+        assertEquals(expResultOne, resultOne);
+        assertEquals(expResultTwo, resultTwo);
+    }
+    
+    @Test (expected = NoSuchElementException.class)
+    public void testDynamicArrayChangeAtWhenBadIndex() {
+        dynamicArr.changeAt(100, 1);
+    }
+    
+    @Test
+    public void testDynamicArrayContainsWhenContains() {
+        boolean expResult = true;
+        boolean result = dynamicArr.contains(1);
+        assertEquals(expResult, result);
+    }
+    
+    @Test
+    public void testDynamicArrayContainsWhenDoesNotContain() {
+        boolean expResult = false;
+        boolean result = dynamicArr.contains(10);
+        assertEquals(expResult, result);
+    }
+    
+    @Test
+    public void testDynamicArrayContainsAllWhenContains() {
+        boolean expResult = true;
+        boolean result = dynamicArr.containsAll(
+                                        new DynamicArray<Integer>(1, 2, 2));
+        assertEquals(expResult, result);
+    }
+    
+    @Test
+    public void testDynamicArrayContainsAllWhenDoesNotContain() {
+        boolean expResult = false;
+        boolean result = dynamicArr.containsAll(
+                                        new DynamicArray<Integer>(1, 4, 2));
+        assertEquals(expResult, result);
+    }
+    
+    @Test
+    public void testDynamicArrayCopyValuesDueConstructorWhenAddOneElement() {
+        DynamicArray<Integer> dynArr = new DynamicArray<>(1);
+        int expResult = 1;
+        int result = dynArr.getAt(0) * dynArr.size();
+        assertEquals(expResult, result);
+    }
+    
+    @Test (expected = NoSuchElementException.class)
+    public void testDynamicArrayGetAtWhenBadIndex() {
+        dynamicArr.getAt(100);
+    }
+    
+    @Test
+    public void testDynamicArrayRemoveWhenExists() {
+        boolean expResult = true;
+        boolean result = dynamicArr.remove(2);
+        assertEquals(expResult, result);
+    }
+    
+    @Test
+    public void testDynamicArrayRemoveWhenDoesNotExist() {
+        boolean expResult = false;
+        boolean result = dynamicArr.remove(0);
+        assertEquals(expResult, result);
+    }
+    
+    @Test
+    public void testDynamicArrayRemoveAllWhenExists() {
+        dynamicArr.removeAll(new DynamicArray(3, 4, 1));
+        int expResult = 1;
+        int result = (dynamicArr.getAt(0) - 1) * dynamicArr.size();
+        assertEquals(expResult, result);
+    }
+    
+    @Test (expected = NoSuchElementException.class)
+    public void testDynamicArrayRemoveAtWhenBadIndex() {
+        dynamicArr.removeAt(100);
+    }
+    
+    @Test
+    public void testDynamicArrayRetainAll() {
+        DynamicArray<Integer> coll = new DynamicArray<>(1, 3, 6, 5);
+        dynamicArr.retainAll(coll);
+        int expResult = 2;
+        int result = dynamicArr.size();
+        assertEquals(expResult, result);
     }
     
 }
