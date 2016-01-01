@@ -1,16 +1,13 @@
 /*
  * @author Igor Tymchyshyn
- *
- * This class was written not only for concrete project,
- * it was written for possible using in future;
 */
 
 package ua.yandex.shad;
 
-import java.lang.reflect.Array;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+import java.util.Arrays;
 
 public class DynamicArray<E> implements Collection<E> {
 
@@ -178,8 +175,10 @@ public class DynamicArray<E> implements Collection<E> {
 
     @Override
     public <T> T[] toArray(T[] a) {
-        T[] val = (T[]) Array.newInstance(a.getClass().getComponentType(), 
-                                                indexOfNextElem);
+        //T[] val = (T[]) Array.newInstance(a.getClass().getComponentType(), 
+        //                                        indexOfNextElem);
+        T[] val = a.clone();
+        val = Arrays.copyOf(val, indexOfNextElem);
         for (int i = 0; i < indexOfNextElem; i++) {
             val[i] = (T) values[i];
         }
